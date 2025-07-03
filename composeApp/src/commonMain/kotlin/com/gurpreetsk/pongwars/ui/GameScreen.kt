@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gurpreetsk.pongwars.models.GameState
 import com.gurpreetsk.pongwars.models.Square
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun GameScreen(modifier: Modifier = Modifier) {
@@ -124,4 +125,30 @@ fun DrawScope.drawSquare(square: Square, squareSizePx: Float) {
         size = Size(squareSizePx, squareSizePx),
         style = Stroke(width = 1f)
     )
+}
+
+@Preview
+@Composable
+private fun ScoreDisplayPreview() {
+    ScoreDisplay(
+        leftScore = 400,
+        rightScore = 400,
+        leftColor = Color.Blue,
+        rightColor = Color.Red
+    )
+}
+
+@Preview
+@Composable
+private fun GameGridPreview() {
+    GameGrid(
+        gameState = GameState(gridRows = 10, gridCols = 20),
+        modifier = Modifier.size(400.dp, 200.dp)
+    )
+}
+
+@Preview
+@Composable
+private fun GameScreenPreview() {
+    GameScreen()
 }
