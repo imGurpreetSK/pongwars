@@ -81,23 +81,16 @@ fun GameGrid(
     gameState: GameState,
     modifier: Modifier = Modifier
 ) {
-    BoxWithConstraints(modifier = modifier.fillMaxSize()) {
+    Canvas(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color.Black)
+    ) {
         val squareSize = minOf(
-            maxWidth.value / gameState.gridCols,
-            maxHeight.value / gameState.gridRows
-        ).dp
-        
-        Canvas(
-            modifier = Modifier
-                .size(
-                    width = squareSize * gameState.gridCols,
-                    height = squareSize * gameState.gridRows
-                )
-                .align(Alignment.Center)
-                .background(Color.Black)
-        ) {
-            drawGrid(gameState, squareSize.value)
-        }
+            size.width / gameState.gridCols,
+            size.height / gameState.gridRows
+        )
+        drawGrid(gameState, squareSize)
     }
 }
 
