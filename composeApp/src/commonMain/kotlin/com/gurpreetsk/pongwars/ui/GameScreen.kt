@@ -81,16 +81,30 @@ fun GameGrid(
     gameState: GameState,
     modifier: Modifier = Modifier
 ) {
+    val targetSquareSize = 20.dp
+    
     Canvas(
         modifier = modifier
             .fillMaxSize()
             .background(Color.Black)
     ) {
-        val squareSize = minOf(
-            size.width / gameState.gridCols,
-            size.height / gameState.gridRows
+        val squareSizePx = targetSquareSize.toPx()
+        val cols = (size.width / squareSizePx).toInt().coerceAtLeast(2)
+        val rows = (size.height / squareSizePx).toInt().coerceAtLeast(2)
+        
+        // Ensure even number of columns for equal split
+        val adjustedCols = if (cols % 2 == 0) cols else cols - 1
+        
+        // Initialize grid if needed
+        gameState.initializeGrid(rows, adjustedCols)
+        
+        // Calculate actual square size to fit exactly
+        val actualSquareSize = minOf(
+            size.width / adjustedCols,
+            size.height / rows
         )
-        drawGrid(gameState, squareSize)
+        
+        drawGrid(gameState, actualSquareSize)
     }
 }
 
@@ -135,7 +149,7 @@ private fun ScoreDisplayPreview() {
 @Composable
 private fun GameGridPreview() {
     GameGrid(
-        gameState = GameState(gridRows = 10, gridCols = 20),
+        gameState = GameState(),
         modifier = Modifier.size(400.dp, 200.dp)
     )
 }

@@ -5,8 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 
 class GameState(
-    val gridRows: Int = 20,
-    val gridCols: Int = 40,
     val leftColor: Color = Color.Blue,
     val rightColor: Color = Color.Red
 ) {
@@ -14,13 +12,19 @@ class GameState(
     val balls = mutableStateListOf<Ball>()
     val leftScore = mutableStateOf(0)
     val rightScore = mutableStateOf(0)
+    var gridRows = 0
+    var gridCols = 0
     
-    init {
-        initializeGrid()
-        initializeBalls()
-    }
-    
-    private fun initializeGrid() {
+    fun initializeGrid(rows: Int, cols: Int) {
+        if (rows == gridRows && cols == gridCols && squares.isNotEmpty()) {
+            return // Already initialized with same dimensions
+        }
+        
+        gridRows = rows
+        gridCols = cols
+        squares.clear()
+        balls.clear()
+        
         for (row in 0 until gridRows) {
             for (col in 0 until gridCols) {
                 val isLeftSide = col < gridCols / 2
@@ -34,6 +38,8 @@ class GameState(
                 )
             }
         }
+        
+        initializeBalls()
         updateScores()
     }
     
