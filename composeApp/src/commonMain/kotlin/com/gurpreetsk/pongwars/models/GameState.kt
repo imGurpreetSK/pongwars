@@ -50,8 +50,8 @@ class GameState(
                 Ball(
                     x = gridCols * 0.25f,
                     y = gridRows * 0.5f,
-                    velocityX = 0.4f,   // Moving right
-                    velocityY = 0.3f,
+                    velocityX = 0.2f,   // Moving right (reduced by 50%)
+                    velocityY = 0.15f,
                     color = rightColor  // Inverted: right color on left side
                 )
             )
@@ -60,8 +60,8 @@ class GameState(
                 Ball(
                     x = gridCols * 0.75f,
                     y = gridRows * 0.5f,
-                    velocityX = -0.4f,  // Moving left
-                    velocityY = -0.3f,
+                    velocityX = -0.2f,  // Moving left (reduced by 50%)
+                    velocityY = -0.15f,
                     color = leftColor   // Inverted: left color on right side
                 )
             )
