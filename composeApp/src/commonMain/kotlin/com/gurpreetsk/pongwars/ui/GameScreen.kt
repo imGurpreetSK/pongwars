@@ -13,6 +13,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.gurpreetsk.pongwars.models.GameState
 import com.gurpreetsk.pongwars.models.Square
 import com.gurpreetsk.pongwars.models.Ball
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -82,40 +84,49 @@ fun GameGrid(
     gameState: GameState,
     modifier: Modifier = Modifier
 ) {
-    val targetSquareSize = 20.dp
+    val targetSquareSize = 30.dp
     
-    // Animation loop
-    LaunchedEffect(gameState) {
-        while (true) {
-            withFrameMillis { frameTime ->
-                gameState.updateBalls()
-            }
-        }
-    }
-    
-    Canvas(
+    BoxWithConstraints(
         modifier = modifier
             .fillMaxSize()
             .background(Color.Black)
     ) {
-        val squareSizePx = targetSquareSize.toPx()
-        val cols = (size.width / squareSizePx).toInt().coerceAtLeast(2)
-        val rows = (size.height / squareSizePx).toInt().coerceAtLeast(2)
+        val squareSizePx = with(LocalDensity.current) { targetSquareSize.toPx() }
+        val cols = (constraints.maxWidth / squareSizePx).toInt().coerceAtLeast(2)
+        val rows = (constraints.maxHeight / squareSizePx).toInt().coerceAtLeast(2)
         
         // Ensure even number of columns for equal split
         val adjustedCols = if (cols % 2 == 0) cols else cols - 1
         
-        // Initialize grid if needed
-        gameState.initializeGrid(rows, adjustedCols)
+        // Initialize grid only when dimensions change
+        LaunchedEffect(rows, adjustedCols) {
+            gameState.initializeGrid(rows, adjustedCols)
+        }
         
-        // Calculate actual square size to fit exactly
-        val actualSquareSize = minOf(
-            size.width / adjustedCols,
-            size.height / rows
-        )
+        // Animation loop with frame rate limiting
+        LaunchedEffect(gameState) {
+            val frameTime = 16L // ~60 FPS
+            while (true) {
+                val startTime = System.currentTimeMillis()
+                gameState.updateBalls()
+                val elapsed = System.currentTimeMillis() - startTime
+                val delayTime = (frameTime - elapsed).coerceAtLeast(0)
+                kotlinx.coroutines.delay(delayTime)
+            }
+        }
         
-        drawGrid(gameState, actualSquareSize)
-        drawBalls(gameState, actualSquareSize)
+        Canvas(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            // Calculate actual square size to fit exactly
+            val actualSquareSize = minOf(
+                size.width / adjustedCols,
+                size.height / rows
+            )
+            
+            drawGrid(gameState, actualSquareSize)
+            drawBalls(gameState, actualSquareSize)
+        }
     }
 }
 
