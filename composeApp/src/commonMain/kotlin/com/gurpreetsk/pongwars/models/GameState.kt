@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 
 class GameState(
-    val leftColor: Color = Color.Blue,
-    val rightColor: Color = Color.Red
+    val leftColor: Color = Color(3, 252, 219),
+    val rightColor: Color = Color(2, 122, 107)
 ) {
     val squares = mutableStateListOf<Square>()
     val balls = mutableStateListOf<Ball>()

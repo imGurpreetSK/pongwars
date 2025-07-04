@@ -59,7 +59,7 @@ fun ScoreDisplay(
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Text(
-            text = "Blue: $leftScore",
+            text = "Left: $leftScore",
             style = TextStyle(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
@@ -67,7 +67,7 @@ fun ScoreDisplay(
             )
         )
         Text(
-            text = "Red: $rightScore",
+            text = "Right: $rightScore",
             style = TextStyle(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
@@ -169,8 +169,8 @@ private fun ScoreDisplayPreview() {
     ScoreDisplay(
         leftScore = 400,
         rightScore = 400,
-        leftColor = Color.Blue,
-        rightColor = Color.Red
+        leftColor = Color(3, 252, 219),
+        rightColor = Color(2, 122, 107)
     )
 }
 
