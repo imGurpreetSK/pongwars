@@ -110,18 +110,16 @@ class GameState(
         val isLeftSide = ballCol < gridCols / 2
         val ballIsLeftColor = ball.color == leftColor
         
-        // Ball can claim squares that are of opposite color
-        // Blue ball (starts left) claims red squares
-        // Red ball (starts right) claims blue squares
-        if (square != null && square.color != ball.color) {
-            // Change square color to ball's color
-            square.color = ball.color
+        // Ball flips squares of the SAME color to opposite color
+        if (square != null && square.color == ball.color) {
+            // Flip square to the opposite color
+            square.color = if (ball.color == leftColor) rightColor else leftColor
             square.isClaimed = true
             
             // Update scores
             updateScores()
             
-            // Always bounce when hitting opposite color square
+            // Always bounce when hitting same color square
             // Calculate bounce direction based on where the ball hit the square
             val squareCenterX = ballCol + 0.5f
             val squareCenterY = ballRow + 0.5f
