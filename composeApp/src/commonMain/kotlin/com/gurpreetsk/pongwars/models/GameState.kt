@@ -45,24 +45,24 @@ class GameState(
     
     private fun initializeBalls() {
         val initialBalls = buildList {
-            // Blue ball starts on blue (left) side, moves right
+            // Ball on left side has right color (inverted)
             add(
                 Ball(
                     x = gridCols * 0.25f,
                     y = gridRows * 0.5f,
-                    velocityX = 0.3f,   // Moving right towards red side
+                    velocityX = 0.3f,   // Moving right
                     velocityY = 0.2f,
-                    color = leftColor   // Blue ball
+                    color = rightColor  // Inverted: right color on left side
                 )
             )
-            // Red ball starts on red (right) side, moves left
+            // Ball on right side has left color (inverted)
             add(
                 Ball(
                     x = gridCols * 0.75f,
                     y = gridRows * 0.5f,
-                    velocityX = -0.3f,  // Moving left towards blue side
+                    velocityX = -0.3f,  // Moving left
                     velocityY = -0.2f,
-                    color = rightColor  // Red ball
+                    color = leftColor   // Inverted: left color on right side
                 )
             )
         }
