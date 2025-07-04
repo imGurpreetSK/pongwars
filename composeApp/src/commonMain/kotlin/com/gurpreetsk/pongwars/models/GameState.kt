@@ -91,6 +91,41 @@ class GameState(
                 ball.velocityY = -ball.velocityY
                 ball.y = ball.y.coerceIn(0f, gridRows.toFloat())
             }
+            
+            // Check square collisions
+            checkSquareCollisions(ball)
+        }
+    }
+    
+    private fun checkSquareCollisions(ball: Ball) {
+        val ballRow = ball.y.toInt().coerceIn(0, gridRows - 1)
+        val ballCol = ball.x.toInt().coerceIn(0, gridCols - 1)
+        
+        // Check the square at ball position
+        val square = getSquareAt(ballRow, ballCol)
+        if (square != null && square.color != ball.color) {
+            // Change square color to ball's color
+            square.color = ball.color
+            square.isClaimed = true
+            
+            // Update scores
+            updateScores()
+            
+            // Calculate bounce direction based on where the ball hit the square
+            val squareCenterX = ballCol + 0.5f
+            val squareCenterY = ballRow + 0.5f
+            
+            val dx = ball.x - squareCenterX
+            val dy = ball.y - squareCenterY
+            
+            // Determine which edge was hit
+            if (kotlin.math.abs(dx) > kotlin.math.abs(dy)) {
+                // Hit left or right edge
+                ball.velocityX = -ball.velocityX
+            } else {
+                // Hit top or bottom edge
+                ball.velocityY = -ball.velocityY
+            }
         }
     }
 }
