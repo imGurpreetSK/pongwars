@@ -2,7 +2,6 @@ package com.gurpreetsk.pongwars.ui
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -12,7 +11,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -21,7 +19,6 @@ import androidx.compose.ui.unit.sp
 import com.gurpreetsk.pongwars.models.GameState
 import com.gurpreetsk.pongwars.models.Square
 import com.gurpreetsk.pongwars.models.Ball
-import kotlinx.coroutines.delay
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -103,21 +100,24 @@ fun GameGrid(
             gameState.initializeGrid(rows, adjustedCols)
         }
         
-        // Animation loop with frame rate limiting
-        LaunchedEffect(gameState) {
-            val frameTime = 16L // ~60 FPS
+        // Simple animation trigger
+        var animationTime by remember { mutableStateOf(0L) }
+        
+        LaunchedEffect(Unit) {
             while (true) {
-                val startTime = System.currentTimeMillis()
-                gameState.updateBalls()
-                val elapsed = System.currentTimeMillis() - startTime
-                val delayTime = (frameTime - elapsed).coerceAtLeast(0)
-                kotlinx.coroutines.delay(delayTime)
+                withFrameMillis {
+                    animationTime = it
+                    gameState.updateBalls()
+                }
             }
         }
         
         Canvas(
             modifier = Modifier.fillMaxSize()
         ) {
+            // Force recomposition by reading animation time
+            animationTime
+            
             // Calculate actual square size to fit exactly
             val actualSquareSize = minOf(
                 size.width / adjustedCols,
@@ -140,19 +140,12 @@ fun DrawScope.drawSquare(square: Square, squareSizePx: Float) {
     val x = square.col * squareSizePx
     val y = square.row * squareSizePx
     
-    // Draw filled square
+    // Draw filled square with a tiny inset to create border effect
+    val inset = 0.5f
     drawRect(
         color = square.color,
-        topLeft = Offset(x, y),
-        size = Size(squareSizePx, squareSizePx)
-    )
-    
-    // Draw 0.1px black border
-    drawRect(
-        color = Color.Black,
-        topLeft = Offset(x, y),
-        size = Size(squareSizePx, squareSizePx),
-        style = Stroke(width = 0.1f)
+        topLeft = Offset(x + inset, y + inset),
+        size = Size(squareSizePx - inset * 2, squareSizePx - inset * 2)
     )
 }
 
