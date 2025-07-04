@@ -75,4 +75,22 @@ class GameState(
     fun getSquareAt(row: Int, col: Int): Square? {
         return squares.find { it.row == row && it.col == col }
     }
+    
+    fun updateBalls() {
+        balls.forEach { ball ->
+            // Update ball position
+            ball.x += ball.velocityX
+            ball.y += ball.velocityY
+            
+            // Check wall collisions
+            if (ball.x <= 0 || ball.x >= gridCols) {
+                ball.velocityX = -ball.velocityX
+                ball.x = ball.x.coerceIn(0f, gridCols.toFloat())
+            }
+            if (ball.y <= 0 || ball.y >= gridRows) {
+                ball.velocityY = -ball.velocityY
+                ball.y = ball.y.coerceIn(0f, gridRows.toFloat())
+            }
+        }
+    }
 }

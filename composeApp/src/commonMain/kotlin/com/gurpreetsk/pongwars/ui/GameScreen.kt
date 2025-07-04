@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gurpreetsk.pongwars.models.GameState
 import com.gurpreetsk.pongwars.models.Square
+import com.gurpreetsk.pongwars.models.Ball
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -83,6 +84,15 @@ fun GameGrid(
 ) {
     val targetSquareSize = 20.dp
     
+    // Animation loop
+    LaunchedEffect(gameState) {
+        while (true) {
+            withFrameMillis { frameTime ->
+                gameState.updateBalls()
+            }
+        }
+    }
+    
     Canvas(
         modifier = modifier
             .fillMaxSize()
@@ -105,6 +115,7 @@ fun GameGrid(
         )
         
         drawGrid(gameState, actualSquareSize)
+        drawBalls(gameState, actualSquareSize)
     }
 }
 
@@ -131,6 +142,24 @@ fun DrawScope.drawSquare(square: Square, squareSizePx: Float) {
         topLeft = Offset(x, y),
         size = Size(squareSizePx, squareSizePx),
         style = Stroke(width = 1f)
+    )
+}
+
+fun DrawScope.drawBalls(gameState: GameState, squareSizePx: Float) {
+    gameState.balls.forEach { ball ->
+        drawBall(ball, squareSizePx)
+    }
+}
+
+fun DrawScope.drawBall(ball: Ball, squareSizePx: Float) {
+    val centerX = ball.x * squareSizePx
+    val centerY = ball.y * squareSizePx
+    val radius = ball.radius.toPx()
+    
+    drawCircle(
+        color = ball.color,
+        radius = radius,
+        center = Offset(centerX, centerY)
     )
 }
 
