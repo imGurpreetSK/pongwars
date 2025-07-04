@@ -45,22 +45,24 @@ class GameState(
     
     private fun initializeBalls() {
         val initialBalls = buildList {
+            // Left side ball (red color, to claim blue squares)
             add(
                 Ball(
                     x = gridCols * 0.25f,
                     y = gridRows * 0.5f,
                     velocityX = 0.2f,
                     velocityY = 0.15f,
-                    color = rightColor
+                    color = rightColor  // Red ball on left side
                 )
             )
+            // Right side ball (blue color, to claim red squares)
             add(
                 Ball(
                     x = gridCols * 0.75f,
                     y = gridRows * 0.5f,
                     velocityX = -0.2f,
                     velocityY = -0.15f,
-                    color = leftColor
+                    color = leftColor   // Blue ball on right side
                 )
             )
         }
@@ -108,11 +110,18 @@ class GameState(
         val isLeftSide = ballCol < gridCols / 2
         val ballIsLeftColor = ball.color == leftColor
         
-        // Ball should only claim squares on the opposite side
-        // Left color ball (blue) should only claim right side squares (red)
-        // Right color ball (red) should only claim left side squares (blue)
+        // Ball should only claim squares that are:
+        // 1. Of opposite color to the ball
+        // 2. NOT on the ball's starting side
+        // Red ball starts on left, should only claim blue squares on RIGHT
+        // Blue ball starts on right, should only claim red squares on LEFT
         if (square != null && square.color != ball.color) {
-            if ((ballIsLeftColor && !isLeftSide) || (!ballIsLeftColor && isLeftSide)) {
+            // A ball can only claim squares if the square is the opposite color
+            // AND the ball has crossed to the other side
+            val ballStartsLeft = ball.color == rightColor  // Red ball starts left
+            val ballStartsRight = ball.color == leftColor  // Blue ball starts right
+            
+            if ((ballStartsLeft && !isLeftSide) || (ballStartsRight && isLeftSide)) {
                 // Change square color to ball's color
                 square.color = ball.color
                 square.isClaimed = true
