@@ -25,20 +25,24 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun GameScreen(modifier: Modifier = Modifier) {
     val gameState = remember { GameState() }
     
-    Column(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = modifier.fillMaxSize()
     ) {
+        // Grid fills entire screen
+        GameGrid(
+            gameState = gameState,
+            modifier = Modifier.fillMaxSize()
+        )
+        
+        // Score display overlays on top with transparent background
         ScoreDisplay(
             leftScore = gameState.leftScore.value,
             rightScore = gameState.rightScore.value,
             leftColor = gameState.leftColor,
-            rightColor = gameState.rightColor
-        )
-        
-        GameGrid(
-            gameState = gameState,
-            modifier = Modifier.weight(1f)
+            rightColor = gameState.rightColor,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .background(Color.Black.copy(alpha = 0.5f))
         )
     }
 }
