@@ -122,11 +122,8 @@ fun GameGrid(
             // Force recomposition by reading frame count
             frameCount
             
-            // Calculate actual square size to fit exactly
-            val actualSquareSize = minOf(
-                size.width / adjustedCols,
-                size.height / rows
-            )
+            // Calculate actual square size to fill the entire screen
+            val actualSquareSize = size.width / adjustedCols
             
             drawGrid(gameState, actualSquareSize)
             drawBalls(gameState, actualSquareSize)

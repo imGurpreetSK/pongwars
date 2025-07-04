@@ -1,4 +1,6 @@
 TEAM_ID=
+CODE_SIGN_STYLE=Automatic
+DEVELOPMENT_TEAM=
 
 PRODUCT_NAME=Pongwars
 PRODUCT_BUNDLE_IDENTIFIER=com.gurpreetsk.pongwars.Pongwars$(TEAM_ID)

@@ -13,7 +13,7 @@ struct ComposeView: UIViewControllerRepresentable {
 struct ContentView: View {
     var body: some View {
         ComposeView()
-                .ignoresSafeArea(.keyboard) // Compose has own keyboard handler
+                .ignoresSafeArea(.container, edges: [.leading, .trailing, .bottom]) // Keep top safe area for score
     }
 }
 
