@@ -136,12 +136,12 @@ fun DrawScope.drawSquare(square: Square, squareSizePx: Float) {
         size = Size(squareSizePx, squareSizePx)
     )
     
-    // Draw 1px black border
+    // Draw 0.1px black border
     drawRect(
         color = Color.Black,
         topLeft = Offset(x, y),
         size = Size(squareSizePx, squareSizePx),
-        style = Stroke(width = 1f)
+        style = Stroke(width = 0.1f)
     )
 }
 
