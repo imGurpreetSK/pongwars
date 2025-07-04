@@ -141,7 +141,7 @@ fun DrawScope.drawSquare(square: Square, squareSizePx: Float) {
     val y = square.row * squareSizePx
     
     // Draw filled square with a tiny inset to create border effect
-    val inset = 0.5f
+    val inset = 0.25f
     drawRect(
         color = square.color,
         topLeft = Offset(x + inset, y + inset),
