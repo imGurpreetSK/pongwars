@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import com.gurpreetsk.pongwars.models.GameState
 import com.gurpreetsk.pongwars.models.Square
 import com.gurpreetsk.pongwars.models.Ball
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -105,22 +106,21 @@ fun GameGrid(
         }
         
         // Simple animation trigger
-        var animationTime by remember { mutableStateOf(0L) }
+        var frameCount by remember { mutableStateOf(0) }
         
         LaunchedEffect(Unit) {
             while (true) {
-                withFrameMillis {
-                    animationTime = it
-                    gameState.updateBalls()
-                }
+                delay(16) // ~60 FPS
+                frameCount++
+                gameState.updateBalls()
             }
         }
         
         Canvas(
             modifier = Modifier.fillMaxSize()
         ) {
-            // Force recomposition by reading animation time
-            animationTime
+            // Force recomposition by reading frame count
+            frameCount
             
             // Calculate actual square size to fit exactly
             val actualSquareSize = minOf(
