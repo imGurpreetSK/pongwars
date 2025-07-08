@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 
-class GameState(
+internal class GameState(
     val leftColor: Color = Color(3, 252, 219),
     val rightColor: Color = Color(2, 122, 107)
 ) {
@@ -13,19 +13,19 @@ class GameState(
     val balls = mutableStateListOf<Ball>()
     val leftScore = mutableStateOf(0)
     val rightScore = mutableStateOf(0)
-    var gridRows = 0
-    var gridCols = 0
-    
+    private var gridRows = 0
+    private var gridCols = 0
+
     fun initializeGrid(rows: Int, cols: Int) {
         if (rows == gridRows && cols == gridCols && squares.isNotEmpty()) {
             return // Already initialized with same dimensions
         }
-        
+
         gridRows = rows
         gridCols = cols
         squares.clear()
         balls.clear()
-        
+
         for (row in 0 until gridRows) {
             for (col in 0 until gridCols) {
                 val isLeftSide = col < gridCols / 2
@@ -42,6 +42,28 @@ class GameState(
 
         initializeBalls()
         updateScores()
+    }
+
+    fun updateBalls() {
+        balls.forEach { ball ->
+            // Update ball position
+            ball.x.floatValue += ball.velocityX
+            ball.y.floatValue += ball.velocityY
+
+            // Check wall collisions
+            if (ball.x.floatValue <= 0 || ball.x.floatValue >= gridCols) {
+                ball.velocityX = -ball.velocityX
+                ball.x.floatValue = ball.x.floatValue.coerceIn(0f, gridCols.toFloat())
+            }
+
+            if (ball.y.floatValue <= 0 || ball.y.floatValue >= gridRows) {
+                ball.velocityY = -ball.velocityY
+                ball.y.floatValue = ball.y.floatValue.coerceIn(0f, gridRows.toFloat())
+            }
+
+            // Check square collisions
+            checkSquareCollisions(ball)
+        }
     }
 
     private fun initializeBalls() {
@@ -70,35 +92,13 @@ class GameState(
         balls.addAll(initialBalls)
     }
 
-    fun updateScores() {
+    private fun updateScores() {
         leftScore.value = squares.count { it.color == leftColor }
         rightScore.value = squares.count { it.color == rightColor }
     }
 
-    fun getSquareAt(row: Int, col: Int): Square? {
+    private fun getSquareAt(row: Int, col: Int): Square? {
         return squares.find { it.row == row && it.col == col }
-    }
-
-    fun updateBalls() {
-        balls.forEach { ball ->
-            // Update ball position
-            ball.x.floatValue += ball.velocityX
-            ball.y.floatValue += ball.velocityY
-
-            // Check wall collisions
-            if (ball.x.floatValue <= 0 || ball.x.floatValue >= gridCols) {
-                ball.velocityX = -ball.velocityX
-                ball.x.floatValue = ball.x.floatValue.coerceIn(0f, gridCols.toFloat())
-            }
-
-            if (ball.y.floatValue <= 0 || ball.y.floatValue >= gridRows) {
-                ball.velocityY = -ball.velocityY
-                ball.y.floatValue = ball.y.floatValue.coerceIn(0f, gridRows.toFloat())
-            }
-
-            // Check square collisions
-            checkSquareCollisions(ball)
-        }
     }
 
     private fun checkSquareCollisions(ball: Ball) {
@@ -107,10 +107,6 @@ class GameState(
 
         // Check the square at ball position
         val square = getSquareAt(ballRow, ballCol)
-
-        // Determine which side the ball is on
-        val isLeftSide = ballCol < gridCols / 2
-        val ballIsLeftColor = ball.color == leftColor
 
         // Ball flips squares of the SAME color to opposite color
         if (square != null && square.color == ball.color) {

@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-data class Ball(
+internal data class Ball(
     var x: MutableFloatState,
     var y: MutableFloatState,
     var velocityX: Float,
