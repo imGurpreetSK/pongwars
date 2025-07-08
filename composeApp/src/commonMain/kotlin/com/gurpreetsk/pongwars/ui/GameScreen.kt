@@ -105,42 +105,35 @@ fun GameGrid(
             gameState.initializeGrid(rows, adjustedCols)
         }
         
-        // Simple animation trigger
-        var frameCount by remember { mutableStateOf(0) }
-        
         LaunchedEffect(Unit) {
             while (true) {
                 delay(16) // ~60 FPS
-                frameCount++
                 gameState.updateBalls()
             }
         }
-        
+
         Canvas(
             modifier = Modifier.fillMaxSize()
         ) {
-            // Force recomposition by reading frame count
-            frameCount
-            
             // Calculate actual square size to fill the entire screen
             val actualSquareSize = size.width / adjustedCols
-            
-            drawGrid(gameState, actualSquareSize)
-            drawBalls(gameState, actualSquareSize)
+
+            drawGrid(gameState.squares, actualSquareSize)
+            drawBalls(gameState.balls, actualSquareSize)
         }
     }
 }
 
-fun DrawScope.drawGrid(gameState: GameState, squareSizePx: Float) {
-    gameState.squares.forEach { square ->
+private fun DrawScope.drawGrid(squares: List<Square>, squareSizePx: Float) {
+    squares.forEach { square ->
         drawSquare(square, squareSizePx)
     }
 }
 
-fun DrawScope.drawSquare(square: Square, squareSizePx: Float) {
+private fun DrawScope.drawSquare(square: Square, squareSizePx: Float) {
     val x = square.col * squareSizePx
     val y = square.row * squareSizePx
-    
+
     // Draw filled square with a tiny inset to create border effect
     val inset = 0.1f
     drawRect(
@@ -150,17 +143,17 @@ fun DrawScope.drawSquare(square: Square, squareSizePx: Float) {
     )
 }
 
-fun DrawScope.drawBalls(gameState: GameState, squareSizePx: Float) {
-    gameState.balls.forEach { ball ->
+private fun DrawScope.drawBalls(balls: List<Ball>, squareSizePx: Float) {
+    balls.forEach { ball ->
         drawBall(ball, squareSizePx)
     }
 }
 
-fun DrawScope.drawBall(ball: Ball, squareSizePx: Float) {
-    val centerX = ball.x * squareSizePx
-    val centerY = ball.y * squareSizePx
+private fun DrawScope.drawBall(ball: Ball, squareSizePx: Float) {
+    val centerX = ball.x.floatValue * squareSizePx
+    val centerY = ball.y.floatValue * squareSizePx
     val radius = ball.radius.toPx()
-    
+
     drawCircle(
         color = ball.color,
         radius = radius,

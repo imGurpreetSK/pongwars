@@ -1,5 +1,6 @@
 package com.gurpreetsk.pongwars.models
 
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -38,18 +39,18 @@ class GameState(
                 )
             }
         }
-        
+
         initializeBalls()
         updateScores()
     }
-    
+
     private fun initializeBalls() {
         val initialBalls = buildList {
             // Ball on left side has right color (inverted)
             add(
                 Ball(
-                    x = gridCols * 0.25f,
-                    y = gridRows * 0.5f,
+                    x = mutableFloatStateOf(gridCols * 0.25f),
+                    y = mutableFloatStateOf(gridRows * 0.5f),
                     velocityX = 0.2f,   // Moving right (reduced by 50%)
                     velocityY = 0.15f,
                     color = rightColor  // Inverted: right color on left side
@@ -58,8 +59,8 @@ class GameState(
             // Ball on right side has left color (inverted)
             add(
                 Ball(
-                    x = gridCols * 0.75f,
-                    y = gridRows * 0.5f,
+                    x = mutableFloatStateOf(gridCols * 0.75f),
+                    y = mutableFloatStateOf(gridRows * 0.5f),
                     velocityX = -0.2f,  // Moving left (reduced by 50%)
                     velocityY = -0.15f,
                     color = leftColor   // Inverted: left color on right side
@@ -68,65 +69,66 @@ class GameState(
         }
         balls.addAll(initialBalls)
     }
-    
+
     fun updateScores() {
         leftScore.value = squares.count { it.color == leftColor }
         rightScore.value = squares.count { it.color == rightColor }
     }
-    
+
     fun getSquareAt(row: Int, col: Int): Square? {
         return squares.find { it.row == row && it.col == col }
     }
-    
+
     fun updateBalls() {
         balls.forEach { ball ->
             // Update ball position
-            ball.x += ball.velocityX
-            ball.y += ball.velocityY
-            
+            ball.x.floatValue += ball.velocityX
+            ball.y.floatValue += ball.velocityY
+
             // Check wall collisions
-            if (ball.x <= 0 || ball.x >= gridCols) {
+            if (ball.x.floatValue <= 0 || ball.x.floatValue >= gridCols) {
                 ball.velocityX = -ball.velocityX
-                ball.x = ball.x.coerceIn(0f, gridCols.toFloat())
+                ball.x.floatValue = ball.x.floatValue.coerceIn(0f, gridCols.toFloat())
             }
-            if (ball.y <= 0 || ball.y >= gridRows) {
+
+            if (ball.y.floatValue <= 0 || ball.y.floatValue >= gridRows) {
                 ball.velocityY = -ball.velocityY
-                ball.y = ball.y.coerceIn(0f, gridRows.toFloat())
+                ball.y.floatValue = ball.y.floatValue.coerceIn(0f, gridRows.toFloat())
             }
-            
+
             // Check square collisions
             checkSquareCollisions(ball)
         }
     }
-    
+
     private fun checkSquareCollisions(ball: Ball) {
-        val ballRow = ball.y.toInt().coerceIn(0, gridRows - 1)
-        val ballCol = ball.x.toInt().coerceIn(0, gridCols - 1)
-        
+        val ballRow = ball.y.floatValue.toInt().coerceIn(0, gridRows - 1)
+        val ballCol = ball.x.floatValue.toInt().coerceIn(0, gridCols - 1)
+
         // Check the square at ball position
         val square = getSquareAt(ballRow, ballCol)
-        
+
         // Determine which side the ball is on
         val isLeftSide = ballCol < gridCols / 2
         val ballIsLeftColor = ball.color == leftColor
-        
+
         // Ball flips squares of the SAME color to opposite color
         if (square != null && square.color == ball.color) {
             // Flip square to the opposite color
             square.color = if (ball.color == leftColor) rightColor else leftColor
             square.isClaimed = true
-            
+
             // Update scores
             updateScores()
-            
+
             // Always bounce when hitting same color square
             // Calculate bounce direction based on where the ball hit the square
             val squareCenterX = ballCol + 0.5f
             val squareCenterY = ballRow + 0.5f
-            
-            val dx = ball.x - squareCenterX
-            val dy = ball.y - squareCenterY
-            
+
+            val dx = ball.x.floatValue - squareCenterX
+            val dy = ball.y.floatValue - squareCenterY
+
             // Determine which edge was hit
             if (kotlin.math.abs(dx) > kotlin.math.abs(dy)) {
                 // Hit left or right edge
