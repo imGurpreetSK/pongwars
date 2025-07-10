@@ -1,17 +1,13 @@
 package com.gurpreetsk.pongwars.models
 
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.ui.graphics.Color
 import kotlin.test.*
 
 internal class ScoreTrackingTest {
     
-    private val leftColor = Color(3, 252, 219)
-    private val rightColor = Color(2, 122, 107)
-    
     @Test
     fun `scores update correctly after square flipping`() {
-        val gameState = GameState(leftColor, rightColor)
+        val gameState = GameState()
         gameState.initializeGrid(4, 4)
         
         // Initially each side has 8 squares
@@ -24,18 +20,18 @@ internal class ScoreTrackingTest {
             y = mutableFloatStateOf(0.5f),
             velocityX = 0.1f,
             velocityY = 0.1f,
-            color = leftColor
+            side = Side.LEFT
         )
         gameState.balls.clear()
         gameState.balls.add(testBall)
         
-        // Make square at (0, 0) same color as ball (left color)
+        // Make square at (0, 0) same side as ball (left side)
         val targetSquare = gameState.squares.find { it.row == 0 && it.col == 0 }!!
-        targetSquare.color = leftColor
+        targetSquare.side = Side.LEFT
         
         gameState.updateBalls()
         
-        // Square should flip to right color, updating scores
+        // Square should flip to right side, updating scores
         assertEquals(7, gameState.leftScore.value)
         assertEquals(9, gameState.rightScore.value)
     }

@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gurpreetsk.pongwars.models.Ball
 import com.gurpreetsk.pongwars.models.GameState
+import com.gurpreetsk.pongwars.models.Side
 import com.gurpreetsk.pongwars.models.Square
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -127,44 +128,44 @@ private fun GameGrid(
             // Calculate actual square size to fill the entire screen
             val actualSquareSize = size.width / adjustedCols
 
-            drawGrid(gameState.squares, actualSquareSize)
-            drawBalls(gameState.balls, actualSquareSize)
+            drawGrid(gameState.squares, actualSquareSize, gameState)
+            drawBalls(gameState.balls, actualSquareSize, gameState)
         }
     }
 }
 
-private fun DrawScope.drawGrid(squares: List<Square>, squareSizePx: Float) {
+private fun DrawScope.drawGrid(squares: List<Square>, squareSizePx: Float, gameState: GameState) {
     squares.forEach { square ->
-        drawSquare(square, squareSizePx)
+        drawSquare(square, squareSizePx, gameState)
     }
 }
 
-private fun DrawScope.drawSquare(square: Square, squareSizePx: Float) {
+private fun DrawScope.drawSquare(square: Square, squareSizePx: Float, gameState: GameState) {
     val x = square.col * squareSizePx
     val y = square.row * squareSizePx
 
     // Draw filled square with a tiny inset to create border effect
     val inset = 0.1f
     drawRect(
-        color = square.color,
+        color = gameState.getColor(square.side),
         topLeft = Offset(x + inset, y + inset),
         size = Size(squareSizePx - inset * 2, squareSizePx - inset * 2)
     )
 }
 
-private fun DrawScope.drawBalls(balls: List<Ball>, squareSizePx: Float) {
+private fun DrawScope.drawBalls(balls: List<Ball>, squareSizePx: Float, gameState: GameState) {
     balls.forEach { ball ->
-        drawBall(ball, squareSizePx)
+        drawBall(ball, squareSizePx, gameState)
     }
 }
 
-private fun DrawScope.drawBall(ball: Ball, squareSizePx: Float) {
+private fun DrawScope.drawBall(ball: Ball, squareSizePx: Float, gameState: GameState) {
     val centerX = ball.x.floatValue * squareSizePx
     val centerY = ball.y.floatValue * squareSizePx
     val radius = ball.radius.toPx()
 
     drawCircle(
-        color = ball.color,
+        color = gameState.getColor(ball.side),
         radius = radius,
         center = Offset(centerX, centerY)
     )

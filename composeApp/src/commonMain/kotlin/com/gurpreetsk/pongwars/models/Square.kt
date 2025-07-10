@@ -1,10 +1,8 @@
 package com.gurpreetsk.pongwars.models
 
-import androidx.compose.ui.graphics.Color
-
 internal data class Square(
     val row: Int,
     val col: Int,
-    var color: Color,
+    var side: Side,
     var isClaimed: Boolean
 )

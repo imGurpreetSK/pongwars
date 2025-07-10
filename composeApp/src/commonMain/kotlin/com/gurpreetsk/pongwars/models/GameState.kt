@@ -33,7 +33,7 @@ internal class GameState(
                     Square(
                         row = row,
                         col = col,
-                        color = if (isLeftSide) leftColor else rightColor,
+                        side = if (isLeftSide) Side.LEFT else Side.RIGHT,
                         isClaimed = false
                     )
                 )
@@ -66,26 +66,31 @@ internal class GameState(
         }
     }
 
+    fun getColor(side: Side): Color = when (side) {
+        Side.LEFT -> leftColor
+        Side.RIGHT -> rightColor
+    }
+
     private fun initializeBalls() {
         val initialBalls = buildList {
-            // Ball on left side has right color (inverted)
+            // Ball on left side has right side (inverted)
             add(
                 Ball(
                     x = mutableFloatStateOf(gridCols * 0.25f),
                     y = mutableFloatStateOf(gridRows * 0.5f),
                     velocityX = 0.2f,   // Moving right (reduced by 50%)
                     velocityY = 0.15f,
-                    color = rightColor  // Inverted: right color on left side
+                    side = Side.RIGHT  // Inverted: right side on left side
                 )
             )
-            // Ball on right side has left color (inverted)
+            // Ball on right side has left side (inverted)
             add(
                 Ball(
                     x = mutableFloatStateOf(gridCols * 0.75f),
                     y = mutableFloatStateOf(gridRows * 0.5f),
                     velocityX = -0.2f,  // Moving left (reduced by 50%)
                     velocityY = -0.15f,
-                    color = leftColor   // Inverted: left color on right side
+                    side = Side.LEFT   // Inverted: left side on right side
                 )
             )
         }
@@ -93,8 +98,8 @@ internal class GameState(
     }
 
     private fun updateScores() {
-        leftScore.value = squares.count { it.color == leftColor }
-        rightScore.value = squares.count { it.color == rightColor }
+        leftScore.value = squares.count { it.side == Side.LEFT }
+        rightScore.value = squares.count { it.side == Side.RIGHT }
     }
 
     private fun getSquareAt(row: Int, col: Int): Square? {
@@ -108,10 +113,10 @@ internal class GameState(
         // Check the square at ball position
         val square = getSquareAt(ballRow, ballCol)
 
-        // Ball flips squares of the SAME color to opposite color
-        if (square != null && square.color == ball.color) {
-            // Flip square to the opposite color
-            square.color = if (ball.color == leftColor) rightColor else leftColor
+        // Ball flips squares of the SAME side to opposite side
+        if (square != null && square.side == ball.side) {
+            // Flip square to the opposite side
+            square.side = if (ball.side == Side.LEFT) Side.RIGHT else Side.LEFT
             square.isClaimed = true
 
             // Update scores

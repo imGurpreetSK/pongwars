@@ -1,17 +1,13 @@
 package com.gurpreetsk.pongwars.models
 
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.ui.graphics.Color
 import kotlin.test.*
 
 internal class BallWallCollisionsTest {
     
-    private val leftColor = Color(3, 252, 219)
-    private val rightColor = Color(2, 122, 107)
-    
     @Test
     fun `update balls bounces off right wall`() {
-        val gameState = GameState(leftColor, rightColor)
+        val gameState = GameState()
         gameState.initializeGrid(10, 10)
         
         // Create a ball near the right wall
@@ -20,7 +16,7 @@ internal class BallWallCollisionsTest {
             y = mutableFloatStateOf(5.0f),
             velocityX = 0.2f,
             velocityY = 0.0f,
-            color = leftColor
+            side = Side.LEFT
         )
         gameState.balls.clear()
         gameState.balls.add(testBall)
@@ -34,7 +30,7 @@ internal class BallWallCollisionsTest {
     
     @Test
     fun `update balls bounces off left wall`() {
-        val gameState = GameState(leftColor, rightColor)
+        val gameState = GameState()
         gameState.initializeGrid(10, 10)
         
         // Create a ball near the left wall
@@ -43,7 +39,7 @@ internal class BallWallCollisionsTest {
             y = mutableFloatStateOf(5.0f),
             velocityX = -0.2f,
             velocityY = 0.0f,
-            color = leftColor
+            side = Side.LEFT
         )
         gameState.balls.clear()
         gameState.balls.add(testBall)
@@ -57,7 +53,7 @@ internal class BallWallCollisionsTest {
     
     @Test
     fun `update balls bounces off bottom wall`() {
-        val gameState = GameState(leftColor, rightColor)
+        val gameState = GameState()
         gameState.initializeGrid(10, 10)
         
         // Create a ball near the bottom wall
@@ -66,7 +62,7 @@ internal class BallWallCollisionsTest {
             y = mutableFloatStateOf(9.9f),
             velocityX = 0.0f,
             velocityY = 0.2f,
-            color = leftColor
+            side = Side.LEFT
         )
         gameState.balls.clear()
         gameState.balls.add(testBall)
@@ -80,7 +76,7 @@ internal class BallWallCollisionsTest {
     
     @Test
     fun `update balls bounces off top wall`() {
-        val gameState = GameState(leftColor, rightColor)
+        val gameState = GameState()
         gameState.initializeGrid(10, 10)
         
         // Create a ball near the top wall
@@ -89,7 +85,7 @@ internal class BallWallCollisionsTest {
             y = mutableFloatStateOf(0.1f),
             velocityX = 0.0f,
             velocityY = -0.2f,
-            color = leftColor
+            side = Side.LEFT
         )
         gameState.balls.clear()
         gameState.balls.add(testBall)
@@ -103,7 +99,7 @@ internal class BallWallCollisionsTest {
     
     @Test
     fun `update balls bounces off corner walls simultaneously`() {
-        val gameState = GameState(leftColor, rightColor)
+        val gameState = GameState()
         gameState.initializeGrid(10, 10)
         
         // Create a ball in the corner
@@ -112,7 +108,7 @@ internal class BallWallCollisionsTest {
             y = mutableFloatStateOf(9.9f),
             velocityX = 0.2f,
             velocityY = 0.2f,
-            color = leftColor
+            side = Side.LEFT
         )
         gameState.balls.clear()
         gameState.balls.add(testBall)

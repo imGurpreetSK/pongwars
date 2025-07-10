@@ -1,16 +1,12 @@
 package com.gurpreetsk.pongwars.models
 
-import androidx.compose.ui.graphics.Color
 import kotlin.test.*
 
 internal class GridInitializationTest {
     
-    private val leftColor = Color(3, 252, 219)
-    private val rightColor = Color(2, 122, 107)
-    
     @Test
     fun `initialize grid creates correct number of squares and balls`() {
-        val gameState = GameState(leftColor, rightColor)
+        val gameState = GameState()
         val rows = 10
         val cols = 20
         
@@ -22,24 +18,24 @@ internal class GridInitializationTest {
     
     @Test
     fun `initialize grid assigns correct colors to left and right sides`() {
-        val gameState = GameState(leftColor, rightColor)
+        val gameState = GameState()
         val rows = 10
         val cols = 20
         
         gameState.initializeGrid(rows, cols)
         
         val leftSideSquares = gameState.squares.filter { it.col < cols / 2 }
-        assertTrue(leftSideSquares.all { it.color == leftColor })
+        assertTrue(leftSideSquares.all { it.side == Side.LEFT })
         assertEquals(rows * (cols / 2), leftSideSquares.size)
         
         val rightSideSquares = gameState.squares.filter { it.col >= cols / 2 }
-        assertTrue(rightSideSquares.all { it.color == rightColor })
+        assertTrue(rightSideSquares.all { it.side == Side.RIGHT })
         assertEquals(rows * (cols / 2), rightSideSquares.size)
     }
     
     @Test
     fun `initialize grid sets all squares as unclaimed initially`() {
-        val gameState = GameState(leftColor, rightColor)
+        val gameState = GameState()
         gameState.initializeGrid(10, 20)
         
         assertTrue(gameState.squares.all { !it.isClaimed })
@@ -47,7 +43,7 @@ internal class GridInitializationTest {
     
     @Test
     fun `initialize grid calculates initial scores correctly`() {
-        val gameState = GameState(leftColor, rightColor)
+        val gameState = GameState()
         val rows = 10
         val cols = 20
         
@@ -59,7 +55,7 @@ internal class GridInitializationTest {
     
     @Test
     fun `initialize grid with same dimensions does not recreate squares`() {
-        val gameState = GameState(leftColor, rightColor)
+        val gameState = GameState()
         
         gameState.initializeGrid(10, 20)
         val initialSquareCount = gameState.squares.size
@@ -73,7 +69,7 @@ internal class GridInitializationTest {
     
     @Test
     fun `initialize grid with different dimensions recreates grid`() {
-        val gameState = GameState(leftColor, rightColor)
+        val gameState = GameState()
         
         gameState.initializeGrid(10, 20)
         assertEquals(200, gameState.squares.size)

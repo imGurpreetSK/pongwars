@@ -1,17 +1,13 @@
 package com.gurpreetsk.pongwars.models
 
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.ui.graphics.Color
 import kotlin.test.*
 
 internal class MultipleBallsTest {
     
-    private val leftColor = Color(3, 252, 219)
-    private val rightColor = Color(2, 122, 107)
-    
     @Test
     fun `multiple balls update simultaneously`() {
-        val gameState = GameState(leftColor, rightColor)
+        val gameState = GameState()
         gameState.initializeGrid(10, 10)
         
         // Clear default balls and add custom ones
@@ -22,7 +18,7 @@ internal class MultipleBallsTest {
             y = mutableFloatStateOf(2.0f),
             velocityX = 0.1f,
             velocityY = 0.1f,
-            color = leftColor
+            side = Side.LEFT
         )
         
         val ball2 = Ball(
@@ -30,7 +26,7 @@ internal class MultipleBallsTest {
             y = mutableFloatStateOf(7.0f),
             velocityX = -0.1f,
             velocityY = -0.1f,
-            color = rightColor
+            side = Side.RIGHT
         )
         
         gameState.balls.add(ball1)
